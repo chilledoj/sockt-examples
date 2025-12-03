@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chilledoj/sockt-examples/coderws"
+	"github.com/chilledoj/sockt-examples/gorillaws"
 	"github.com/chilledoj/sockt-examples/tcpserve"
 	"log"
 	"os"
@@ -32,6 +33,8 @@ func runClient(serverType string) error {
 	switch serverType {
 	case "coderws":
 		return coderws.RunCoderClient(ctx)
+	case "gorillaws":
+		return gorillaws.RunGorillaClient(ctx)
 	case "tcp":
 		return tcpserve.RunTcpClient(ctx)
 	case "":

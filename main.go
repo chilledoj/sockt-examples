@@ -6,6 +6,7 @@ import (
 	"github.com/chilledoj/sockt"
 	"github.com/chilledoj/sockt-examples/coderws"
 	"github.com/chilledoj/sockt-examples/engine"
+	"github.com/chilledoj/sockt-examples/gorillaws"
 	"github.com/chilledoj/sockt-examples/tcpserve"
 	"github.com/chilledoj/sockt-examples/types"
 	"log"
@@ -84,6 +85,8 @@ func serverFactory(serverType string, room *sockt.Room[types.RoomID, types.Playe
 	switch serverType {
 	case "coderws":
 		return coderws.NewCoderServer(room), nil
+	case "gorillaws":
+		return gorillaws.NewGorillaServer(room), nil
 	case "tcp":
 		return tcpserve.NewTcpServer(room)
 	case "":
