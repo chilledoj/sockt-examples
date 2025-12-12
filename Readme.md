@@ -78,6 +78,28 @@ go run cmd/client.go tcp
 </td>
 </tr>
 
+<tr>
+<td>
+
+WS using [gobwas/ws](https://github.com/gobwas/ws)
+
+</td>
+<td>
+
+```shell
+go run main.go gobwasws
+```
+
+</td>
+<td>
+
+```shell
+go run cmd/client.go gobwasws
+```
+
+</td>
+</tr>
+
 </tbody>
 </table>
 

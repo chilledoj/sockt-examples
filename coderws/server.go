@@ -46,7 +46,11 @@ func NewCoderServer(room *sockt.Room[types.RoomID, types.PlayerID]) *CoderServer
 
 		conn := &CoderSocketWrapper{Conn: c}
 
-		room.AddConnection(conn, playerID)
+		if err := room.AddConnection(conn, playerID); err != nil {
+			c.Close(websocket.StatusNormalClosure, err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		// Keep the handler alive until context is done or connection closes
 		<-r.Context().Done()
 	})

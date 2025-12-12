@@ -46,7 +46,10 @@ func (t *TcpServer) Start() error {
 		playNum := playerCounter.Add(1)
 		playerID := fmt.Sprintf("player%02d", playNum)
 
-		t.room.AddConnection(c, playerID)
+		if err := t.room.AddConnection(c, playerID); err != nil {
+			conn.Close()
+			fmt.Println(err)
+		}
 	}
 	return nil
 }

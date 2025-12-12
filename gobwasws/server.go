@@ -1,11 +1,11 @@
-package gorillaws
+package gobwasws
 
 import (
 	"context"
 	"fmt"
 	"github.com/chilledoj/sockt"
 	"github.com/chilledoj/sockt-examples/types"
-	"github.com/gorilla/websocket"
+	"github.com/gobwas/ws"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -13,16 +13,11 @@ import (
 
 var playerCounter atomic.Int32
 
-type GorillaServer struct {
+type GobwasWSServer struct {
 	s *http.Server
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func NewGorillaServer(room *sockt.Room[types.RoomID, types.PlayerID]) *GorillaServer {
+func NewGobwasWSServer(room *sockt.Room[types.RoomID, types.PlayerID]) *GobwasWSServer {
 
 	mux := http.NewServeMux()
 
@@ -41,15 +36,13 @@ func NewGorillaServer(room *sockt.Room[types.RoomID, types.PlayerID]) *GorillaSe
 		playNum := playerCounter.Add(1)
 		playerID := fmt.Sprintf("player%02d", playNum)
 
-		//var routeRoomID RoomID = roomID
-
-		c, err := upgrader.Upgrade(w, r, nil)
+		c, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		conn := &GorillaSocketWrapper{Conn: c}
+		conn := &GobwasWsSocketWrapper{Conn: c}
 
 		if err := room.AddConnection(conn, playerID); err != nil {
 			c.Close()
@@ -57,16 +50,18 @@ func NewGorillaServer(room *sockt.Room[types.RoomID, types.PlayerID]) *GorillaSe
 
 			return
 		}
-		
+		// Keep connection alive
+		<-r.Context().Done()
+
 	})
 
-	return &GorillaServer{s: s}
+	return &GobwasWSServer{s: s}
 }
 
-func (c *GorillaServer) Start() error {
+func (c *GobwasWSServer) Start() error {
 	return c.s.ListenAndServe()
 }
 
-func (c *GorillaServer) Stop(ctx context.Context) error {
+func (c *GobwasWSServer) Stop(ctx context.Context) error {
 	return c.s.Shutdown(ctx)
 }

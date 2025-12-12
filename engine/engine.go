@@ -81,6 +81,20 @@ func (e *Engine[PID]) Process(msg sockt.Event[PID]) {
 	}
 }
 
+func (e *Engine[PID]) CanJoin(connId PID) error {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+	if len(e.players) >= 2 {
+		return fmt.Errorf("room is full")
+	}
+	for _, pid := range e.players {
+		if pid == connId {
+			return fmt.Errorf("player %v already connected", connId)
+		}
+	}
+	return nil
+}
+
 func (e *Engine[PID]) processNewConnection(connID PID) {
 	e.mu.Lock()
 	e.players = append(e.players, connID)
