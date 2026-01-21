@@ -8,8 +8,14 @@ import (
 	"github.com/coder/websocket/wsjson"
 )
 
+var _ sockt.Socket = &CoderSocketWrapper{}
+
 type CoderSocketWrapper struct {
 	Conn *websocket.Conn
+}
+
+func (c *CoderSocketWrapper) Close() error {
+	return c.Conn.Close(websocket.StatusNormalClosure, "")
 }
 
 func (c *CoderSocketWrapper) Write(messageType sockt.SocketMessageType, bytes []byte) error {

@@ -8,8 +8,14 @@ import (
 	"net"
 )
 
+var _ sockt.Socket = &NetConnWrapper{}
+
 type NetConnWrapper struct {
 	Conn net.Conn
+}
+
+func (c *NetConnWrapper) Close() error {
+	return c.Conn.Close()
 }
 
 func (c *NetConnWrapper) Write(messageType sockt.SocketMessageType, bytes []byte) error {

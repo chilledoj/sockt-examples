@@ -70,7 +70,7 @@ func (e *Engine[PID]) Init(c chan<- sockt.Event[PID]) {
 }
 
 func (e *Engine[PID]) Process(msg sockt.Event[PID]) {
-	e.lg.Printf("PROCESS: %v\n", msg)
+	e.lg.Printf("PROCESS: %x\n", msg)
 	switch msg.Type {
 	case sockt.EventConnect:
 		e.processNewConnection(msg.Subject)

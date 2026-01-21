@@ -6,8 +6,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+var _ sockt.Socket = &GorillaSocketWrapper{}
+
 type GorillaSocketWrapper struct {
 	Conn *websocket.Conn
+}
+
+func (c *GorillaSocketWrapper) Close() error {
+	return c.Conn.Close()
 }
 
 func (c *GorillaSocketWrapper) Write(messageType sockt.SocketMessageType, bytes []byte) error {
